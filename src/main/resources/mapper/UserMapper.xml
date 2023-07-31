@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.met.metronome.user.service.impl.UserDAO">
+    <select id="processLogin" resultType="com.met.metronome.user.entity.UserDTO">
+        SELECT
+            ID, LOGIN_ID, PASSWORD, NAME
+        FROM
+            USER
+        WHERE
+            LOGIN_ID = #{loginId}
+            AND PASSWORD = #{password}
+    </select>
+</mapper>
