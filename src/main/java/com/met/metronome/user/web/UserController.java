@@ -6,14 +6,13 @@ import com.met.metronome.user.entity.UserResponseDTO;
 import com.met.metronome.user.exception.UserException;
 import com.met.metronome.user.exception.UserExceptionEnum;
 import com.met.metronome.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping(value = "/user")
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -21,8 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ResponseBody
-    @PostMapping(value = "/login")
+    @PostMapping("/login")
     public ResponseEntity<UserResponseDTO> login(UserDTO user) {
         try {
             Gson gson = new Gson();
@@ -34,6 +32,42 @@ public class UserController {
                     .build();
             return ResponseEntity.ok().body(userResponse);
         } catch (UserException e) {
+            log.error(e.getMessage());
+            UserResponseDTO userResponse = UserResponseDTO.builder()
+                    .message(e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(userResponse);
+        }
+    }
+
+    @GetMapping("/find-duplication-id")
+    public ResponseEntity<Boolean> findDuplicationId(@RequestParam("loginId") String loginId) {
+        try {
+            UserDTO user = userService.selectUserFromLoginId(loginId);
+            if (user == null) {
+                return ResponseEntity.ok().body(false);
+            } else {
+                return ResponseEntity.ok().body(true);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<UserResponseDTO> registration(UserDTO user) {
+        try {
+            Gson gson = new Gson();
+            String userJson = gson.toJson(userService.insertUser(user));
+
+            UserResponseDTO userResponse = UserResponseDTO.builder()
+                    .userInfo(userJson)
+                    .message(UserExceptionEnum.OK.getMessage())
+                    .build();
+            return ResponseEntity.ok().body(userResponse);
+        } catch (UserException e) {
+            log.error(e.getMessage());
             UserResponseDTO userResponse = UserResponseDTO.builder()
                     .message(e.getMessage())
                     .build();

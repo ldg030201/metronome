@@ -24,4 +24,22 @@ public class UserServiceImpl implements UserService {
 
         return resultUser;
     }
+
+    @Override
+    public UserDTO selectUserFromLoginId(String loginId) {
+        return userDAO.selectUserFromLoginId(loginId);
+    }
+
+    @Override
+    public UserDTO insertUser(UserDTO user) throws UserException {
+        String userId = user.getLoginId();
+        UserDTO userInfo = selectUserFromLoginId(userId);
+
+        if (userInfo != null) {
+            throw new UserException(UserExceptionEnum.DUPLICATION.getMessage());
+        }
+
+        userDAO.insertUser(user);
+        return selectUserFromLoginId(userId);
+    }
 }

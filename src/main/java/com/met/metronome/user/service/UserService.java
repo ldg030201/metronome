@@ -5,4 +5,8 @@ import com.met.metronome.user.exception.UserException;
 
 public interface UserService {
     UserDTO processLogin(UserDTO user) throws UserException;
+
+    UserDTO selectUserFromLoginId(String loginId);
+
+    UserDTO insertUser(UserDTO user) throws UserException;
 }

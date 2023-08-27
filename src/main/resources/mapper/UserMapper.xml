@@ -10,4 +10,24 @@
             LOGIN_ID = #{loginId}
             AND PASSWORD = #{password}
     </select>
+
+    <select id="selectUserFromLoginId" resultType="com.met.metronome.user.entity.UserDTO">
+        SELECT
+            ID, LOGIN_ID, PASSWORD, NAME
+        FROM
+            USER
+        WHERE
+            LOGIN_ID = #{loginId}
+    </select>
+
+    <insert id="insertUser">
+        <selectKey resultType="Long" keyProperty="id" order="BEFORE">
+            SELECT IFNULL(MAX(ID), 0) + 1 FROM USER
+        </selectKey>
+        INSERT INTO USER (
+            ID, LOGIN_ID, PASSWORD, NAME
+        ) VALUES (
+            #{id}, #{loginId}, #{password}, #{name}
+        )
+    </insert>
 </mapper>
