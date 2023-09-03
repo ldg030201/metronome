@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDTO> login(UserDTO user) {
+    public ResponseEntity<UserResponseDTO> login(@RequestBody UserDTO user) {
         try {
             Gson gson = new Gson();
             String userJson = gson.toJson(userService.processLogin(user));
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserResponseDTO> registration(UserDTO user) {
+    public ResponseEntity<UserResponseDTO> registration(@RequestBody UserDTO user) {
         try {
             Gson gson = new Gson();
             String userJson = gson.toJson(userService.insertUser(user));
